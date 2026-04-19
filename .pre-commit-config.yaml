@@ -1,0 +1,65 @@
+exclude: '^docs/|/migrations/|devcontainer.json'
+default_stages: [pre-commit]
+minimum_pre_commit_version: "3.2.0"
+
+default_language_version:
+  python: python3.13
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: detect-private-key
+
+  - repo: local
+    hooks:
+      - id: local-eslint-check
+        name: eslint check
+        entry: npm run lint
+        language: system
+        types: [text]
+        files: ^frontend/
+
+      - id: local-ruff-check
+        name: ruff check
+        entry: uv run ruff check --force-exclude --fix --exit-non-zero-on-fix
+        require_serial: true
+        language: unsupported
+        types: [python]
+
+      - id: local-ruff-format
+        name: ruff format
+        entry: uv run ruff format --force-exclude --exit-non-zero-on-format
+        require_serial: true
+        language: unsupported
+        types: [python]
+
+      - id: local-pyrefly-check
+        name: pyrefly check
+        entry: uv run pyrefly check backend/app
+        require_serial: true
+        language: unsupported
+        pass_filenames: false
+
+      - id: local-pyrefly-auto-type-infer
+        name: pyrefly auto type infer
+        entry: uv run pyrefly auto-type-infer backend/app
+        require_serial: true
+        language: unsupported
+        pass_filenames: false
+
+ci:
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

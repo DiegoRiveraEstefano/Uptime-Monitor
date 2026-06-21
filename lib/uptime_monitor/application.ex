@@ -14,6 +14,7 @@ defmodule UptimeMonitor.Application do
       {Phoenix.PubSub, name: UptimeMonitor.PubSub},
       UptimeMonitor.Monitors.DynamicSupervisor,
       UptimeMonitor.Monitors.Engine,
+      UptimeMonitor.Metrics.RollupWorker,
       # Start a worker by calling: UptimeMonitor.Worker.start_link(arg)
       # {UptimeMonitor.Worker, arg},
       # Start to serve requests, typically the last entry

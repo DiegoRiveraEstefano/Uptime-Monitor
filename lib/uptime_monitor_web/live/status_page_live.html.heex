@@ -1,0 +1,105 @@
+<Layouts.app flash={@flash}>
+  <div class="space-y-8 pb-24 mt-8">
+
+    <%= cond do %>
+      <% @error == :not_found -> %>
+        <!-- 404 Status page not found -->
+        <div class="text-center py-12 space-y-4">
+          <div class="size-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-100">
+            <.icon name="hero-magnifying-glass" class="size-8" />
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800">Status Page Not Found</h2>
+          <p class="text-sm text-slate-500 max-w-sm mx-auto">The status page you are looking for does not exist or has been removed.</p>
+          <div class="pt-2">
+            <a href="/" class="text-xs font-semibold text-[hsl(268,60%,50%)] hover:underline">&larr; Back to UptimeMonitor</a>
+          </div>
+        </div>
+
+      <% @error == :private -> %>
+        <!-- Private status page message -->
+        <div class="text-center py-12 space-y-4">
+          <div class="size-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-100">
+            <.icon name="hero-lock-closed" class="size-8" />
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800">This Status Page is Private</h2>
+          <p class="text-sm text-slate-500 max-w-sm mx-auto">Access to this page is restricted by the administrator.</p>
+          <div class="pt-2">
+            <a href="/" class="text-xs font-semibold text-[hsl(268,60%,50%)] hover:underline">&larr; Back to UptimeMonitor</a>
+          </div>
+        </div>
+
+      <% true -> %>
+        <!-- Page Header -->
+        <div class="text-center space-y-2">
+          <h1 class="text-3xl font-extrabold font-sans text-slate-900 tracking-tight">{@status_page.title}</h1>
+          <p class="text-xs text-slate-400">Live operational status and SLA records</p>
+        </div>
+
+        <!-- Global Banner Indicator -->
+        <div class={[
+          "rounded-2xl p-5 border flex items-center gap-4 shadow-sm",
+          @global_status == "operational" && "bg-emerald-50 text-emerald-800 border-emerald-100",
+          @global_status == "degraded" && "bg-amber-50 text-amber-800 border-amber-100",
+          @global_status == "major_outage" && "bg-rose-50 text-rose-800 border-rose-100 animate-pulse"
+        ]}>
+          <div class="shrink-0">
+            <.icon :if={@global_status == "operational"} name="hero-check-circle" class="size-8 text-emerald-600" />
+            <.icon :if={@global_status == "degraded"} name="hero-exclamation-circle" class="size-8 text-amber-600" />
+            <.icon :if={@global_status == "major_outage"} name="hero-x-circle" class="size-8 text-rose-600" />
+          </div>
+          <div>
+            <h3 class="font-bold text-base">
+              <%= cond do %>
+                <% @global_status == "operational" -> %>All Systems Operational
+                <% @global_status == "degraded" -> %>Degraded Performance
+                <% @global_status == "major_outage" -> %>Major System Outage
+              <% end %>
+            </h3>
+            <p class="text-xs opacity-80 mt-0.5">
+              <%= cond do %>
+                <% @global_status == "operational" -> %>All monitoring systems are running normally.
+                <% @global_status == "degraded" -> %>Some services are currently experiencing elevated latency or outages.
+                <% @global_status == "major_outage" -> %>We are currently experiencing critical outages across our infrastructure.
+              <% end %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Monitors Grid -->
+        <div class="space-y-4">
+          <h3 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Services status</h3>
+          
+          <div class="space-y-4">
+            <div :for={monitor <- @monitors} class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h4 class="font-bold text-base text-slate-900">{monitor.name}</h4>
+                <span class="text-xs text-slate-400 font-mono mt-0.5 block">{monitor.url}</span>
+              </div>
+
+              <div class="flex items-center gap-6">
+                <div class="text-right">
+                  <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Uptime (30d)</span>
+                  <span class="text-sm font-bold text-slate-700">{monitor.uptime}%</span>
+                </div>
+                
+                <div class="text-right">
+                  <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Latency</span>
+                  <span class="text-sm font-bold text-slate-700">{monitor.latency}ms</span>
+                </div>
+
+                <UptimeComponents.status_badge status={monitor.status} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Powered By branding footer -->
+        <div class="text-center pt-8 border-t border-slate-50">
+          <p class="text-[10px] text-slate-400 uppercase tracking-widest">
+            Powered by <a href="/" class="hover:text-[hsl(268,60%,50%)] font-bold">UptimeMonitor</a>
+          </p>
+        </div>
+    <% end %>
+
+  </div>
+</Layouts.app>

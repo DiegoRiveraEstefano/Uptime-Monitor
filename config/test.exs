@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :uptime_monitor, UptimeMonitor.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "admin",
   hostname: "localhost",
   database: "uptime_monitor_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

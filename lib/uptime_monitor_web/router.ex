@@ -18,6 +18,23 @@ defmodule UptimeMonitorWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    # Public status page
+    live "/status/:slug", StatusPageLive, :show
+
+    # Auth routes
+    live "/login", LoginLive, :new
+    post "/login", SessionController, :create
+    live "/register", RegisterLive, :new
+    post "/register", SessionController, :register
+    delete "/logout", SessionController, :delete
+
+    # Tenant scopes
+    scope "/org/:tenant_slug" do
+      live "/", DashboardLive, :index
+      live "/monitors/:id", MonitorLive, :show
+      live "/settings", SettingsLive, :edit
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -39,6 +56,7 @@ defmodule UptimeMonitorWeb.Router do
 
       live_dashboard "/dashboard", metrics: UptimeMonitorWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+      live "/catalog", UptimeMonitorWeb.CatalogLive
     end
   end
 end

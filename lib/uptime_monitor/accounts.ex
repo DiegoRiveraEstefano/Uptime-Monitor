@@ -73,6 +73,16 @@ defmodule UptimeMonitor.Accounts do
   end
 
   @doc """
+  Updates a tenant workspace parameters.
+  """
+  @spec update_tenant(Tenant.t(), map()) :: {:ok, Tenant.t()} | {:error, Ecto.Changeset.t()}
+  def update_tenant(%Tenant{} = tenant, attrs) do
+    tenant
+    |> Tenant.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Gets a single tenant by ID.
   """
   @spec get_tenant!(pos_integer()) :: Tenant.t()
@@ -96,6 +106,17 @@ defmodule UptimeMonitor.Accounts do
   end
 
   # --- Membership & Invites Management ---
+
+  @doc """
+  Lists all memberships for a tenant, preloading users.
+  """
+  @spec list_members(pos_integer()) :: [Membership.t()]
+  def list_members(tenant_id) do
+    Membership
+    |> where([m], m.tenant_id == ^tenant_id)
+    |> preload(:user)
+    |> Repo.all()
+  end
 
   @doc """
   Gets a user's membership for a specific tenant.

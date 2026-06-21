@@ -3,9 +3,9 @@ import Config
 # Configure your database
 config :uptime_monitor, UptimeMonitor.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "admin",
   hostname: "localhost",
-  database: "uptime_monitor_dev",
+  database: "uptime_monitor",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

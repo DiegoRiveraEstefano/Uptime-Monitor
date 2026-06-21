@@ -1,0 +1,173 @@
+<Layouts.app flash={@flash}>
+  <div class="space-y-8 pb-24">
+    <!-- Back Navigation and Main Header -->
+    <div class="space-y-4">
+      <a href={~p"/org/#{@current_tenant.slug}"} class="text-xs font-semibold text-slate-500 hover:text-[hsl(268,60%)] flex items-center gap-1">
+        &larr; Back to Dashboard
+      </a>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-6">
+        <div>
+          <h1 class="text-3xl font-extrabold font-sans text-slate-900 tracking-tight">{@monitor.name}</h1>
+          <a href={@monitor.url} target="_blank" class="text-sm text-slate-400 hover:text-[hsl(268,60%)] font-mono flex items-center gap-1 mt-1">
+            {@monitor.url}
+            <.icon name="hero-arrow-top-right-on-square" class="size-3" />
+          </a>
+        </div>
+
+        <div :if={@current_role in ["owner", "admin", "editor"]} class="flex items-center gap-3">
+          <UptimeComponents.secondary_button phx-click="toggle_edit_form" id="edit-settings-btn">
+            <.icon name="hero-pencil-square" class="size-4" />
+            Edit Settings
+          </UptimeComponents.secondary_button>
+
+          <UptimeComponents.secondary_button phx-click="delete_monitor" data-confirm="Are you sure you want to delete this monitor and its logs?" id="delete-monitor-btn" class="!text-rose-600 hover:!bg-rose-50 border-rose-100 hover:border-rose-200">
+            Delete
+          </UptimeComponents.secondary_button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <UptimeComponents.metric_card
+        title="Uptime SLA (30d)"
+        value={"#{@uptime}%"}
+        trend={if @uptime == 100.0, do: "up", else: "neutral"}
+      />
+
+      <UptimeComponents.metric_card
+        title="Average Response"
+        value={"#{@latency}ms"}
+        trend="neutral"
+      />
+
+      <div class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <span class="block text-xs uppercase font-semibold text-slate-500 tracking-wider">Current State</span>
+        <div class="pt-2">
+          <UptimeComponents.status_badge status={if @monitor.active, do: "up", else: "pending"} />
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Settings Form (Toggleable) -->
+    <div :if={@show_edit_form} class="bg-slate-50 border border-slate-100 rounded-2xl p-6 max-w-lg mx-auto shadow-sm">
+      <h3 class="font-bold text-lg text-slate-800 font-sans tracking-tight mb-4">Edit Monitor Settings</h3>
+
+      <.form for={@edit_form} phx-submit="update_monitor" id="edit-monitor-form" class="space-y-4">
+        <UptimeComponents.custom_input
+          field={@edit_form[:name]}
+          label="Monitor Name"
+          placeholder="e.g. Website Home"
+          required
+        />
+
+        <UptimeComponents.custom_input
+          field={@edit_form[:url]}
+          type="url"
+          label="Checking URL"
+          placeholder="https://example.com"
+          required
+        />
+
+        <UptimeComponents.custom_input
+          field={@edit_form[:interval_seconds]}
+          type="number"
+          label="Check Interval (seconds)"
+          placeholder="60"
+          required
+        />
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <UptimeComponents.ghost_button phx-click="toggle_edit_form" type="button">
+            Cancel
+          </UptimeComponents.ghost_button>
+          <UptimeComponents.primary_button type="submit" id="save-monitor-update">
+            Save Changes
+          </UptimeComponents.primary_button>
+        </div>
+      </.form>
+    </div>
+
+    <!-- Recent Diagnostic Checks Logs -->
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold font-sans text-slate-900 tracking-tight">Recent Check Results</h2>
+      
+      <div class="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+        <div :if={@check_results == []} class="p-8 text-center text-slate-400 text-sm">
+          No check logs recorded yet. Waiting for ticks...
+        </div>
+        
+        <table :if={@check_results != []} class="w-full text-left text-sm divide-y divide-slate-100">
+          <thead class="bg-slate-50 text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
+            <tr>
+              <th class="px-6 py-3">Status</th>
+              <th class="px-6 py-3">Response Code</th>
+              <th class="px-6 py-3">Latency</th>
+              <th class="px-6 py-3">Logged At</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            <tr :for={result <- @check_results} class="hover:bg-slate-50/50 transition-colors">
+              <td class="px-6 py-4">
+                <span class={[
+                  "px-2.5 py-0.5 rounded-full text-[10px] font-bold border",
+                  result.status == "up" && "bg-emerald-50 text-emerald-700 border-emerald-100",
+                  result.status == "down" && "bg-rose-50 text-rose-700 border-rose-100"
+                ]}>
+                  {String.upcase(result.status)}
+                </span>
+              </td>
+              <td class="px-6 py-4 font-mono text-xs">
+                {result.response_code || "-"}
+              </td>
+              <td class="px-6 py-4 font-medium text-slate-700">{result.latency_ms}ms</td>
+              <td class="px-6 py-4 text-slate-400 text-xs font-mono">{result.inserted_at}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Related Outages Logs -->
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold font-sans text-slate-900 tracking-tight">Recent Incidents History</h2>
+      
+      <div class="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+        <div :if={@incidents == []} class="p-8 text-center text-slate-400 text-sm">
+          No incidents reported. 100% operational history.
+        </div>
+        
+        <table :if={@incidents != []} class="w-full text-left text-sm divide-y divide-slate-100">
+          <thead class="bg-slate-50 text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
+            <tr>
+              <th class="px-6 py-3">Incident Status</th>
+              <th class="px-6 py-3">Outage Start</th>
+              <th class="px-6 py-3">Recovery Date</th>
+              <th class="px-6 py-3">Downtime</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            <tr :for={incident <- @incidents} class="hover:bg-slate-50/50 transition-colors">
+              <td class="px-6 py-4">
+                <span class={[
+                  "px-2.5 py-0.5 rounded-full text-[10px] font-bold border",
+                  incident.status == "open" && "bg-rose-50 text-rose-700 border-rose-100",
+                  incident.status == "resolved" && "bg-slate-50 text-slate-600 border-slate-100"
+                ]}>
+                  {String.upcase(incident.status)}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-slate-500 text-xs font-mono">{incident.opened_at}</td>
+              <td class="px-6 py-4 text-slate-500 text-xs font-mono">{incident.resolved_at || "-"}</td>
+              <td class="px-6 py-4 text-slate-700 font-medium">
+                {if incident.status == "open", do: "Ongoing", else: "#{incident.downtime_seconds}s"}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</Layouts.app>

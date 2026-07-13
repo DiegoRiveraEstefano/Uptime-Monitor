@@ -19,7 +19,9 @@ defmodule UptimeMonitorWeb.RegisterLive do
     <Layouts.app flash={@flash}>
       <div class="max-w-md mx-auto bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-6 mt-12">
         <div class="text-center space-y-2">
-          <h2 class="text-3xl font-extrabold font-sans text-slate-900 tracking-tight">Create Account</h2>
+          <h2 class="text-3xl font-extrabold font-sans text-slate-900 tracking-tight">
+            Create Account
+          </h2>
           <p class="text-sm text-slate-500">Start monitoring your services in seconds</p>
         </div>
 
@@ -49,7 +51,7 @@ defmodule UptimeMonitorWeb.RegisterLive do
 
         <div class="text-center border-t border-slate-50 pt-4">
           <p class="text-xs text-slate-400">
-            Already have an account? 
+            Already have an account?
             <a href="/login" class="text-[hsl(268,60%,50%)] hover:underline font-semibold ml-1">Sign In</a>
           </p>
         </div>

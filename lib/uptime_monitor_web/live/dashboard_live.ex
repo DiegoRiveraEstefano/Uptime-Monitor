@@ -15,13 +15,18 @@ defmodule UptimeMonitorWeb.DashboardLive do
         # Fetch initial dataset
         monitors = Monitors.list_monitors(tenant.id)
         incidents = Incidents.list_incidents(tenant.id)
-        unread_notifications = Alerts.list_platform_notifications(tenant.id) |> Enum.filter(&(!&1.read))
+
+        unread_notifications =
+          Alerts.list_platform_notifications(tenant.id) |> Enum.filter(&(!&1.read))
 
         # Calculate general stats
         {sla, avg_latency} = calculate_global_stats(monitors)
 
         # Set up monitor creation form
-        new_monitor_form = Phoenix.Component.to_form(%{"name" => "", "url" => "", "interval_seconds" => "60"}, as: :monitor)
+        new_monitor_form =
+          Phoenix.Component.to_form(%{"name" => "", "url" => "", "interval_seconds" => "60"},
+            as: :monitor
+          )
 
         socket =
           socket
@@ -80,7 +85,7 @@ defmodule UptimeMonitorWeb.DashboardLive do
   @impl true
   def handle_event("toggle_active", %{"id" => id}, socket) do
     tenant = socket.assigns.current_tenant
-    
+
     case Monitors.get_monitor(tenant.id, String.to_integer(id)) do
       {:ok, monitor} ->
         # Toggle status
@@ -101,7 +106,7 @@ defmodule UptimeMonitorWeb.DashboardLive do
   def handle_event("mark_read", %{"id" => id}, socket) do
     tenant = socket.assigns.current_tenant
     {:ok, _} = Alerts.mark_notification_as_read(tenant.id, String.to_integer(id))
-    
+
     unread = Alerts.list_platform_notifications(tenant.id) |> Enum.filter(&(!&1.read))
     {:noreply, assign(socket, :unread_notifications, unread)}
   end

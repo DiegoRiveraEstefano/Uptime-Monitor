@@ -31,6 +31,7 @@ defmodule UptimeMonitor.Monitors.DynamicSupervisor do
     case GenServer.whereis({:global, {:monitor_worker, monitor_id}}) do
       nil ->
         :ok
+
       pid ->
         DynamicSupervisor.terminate_child(__MODULE__, pid)
     end

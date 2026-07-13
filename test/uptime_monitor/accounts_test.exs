@@ -37,7 +37,9 @@ defmodule UptimeMonitor.AccountsTest do
       assert authenticated_user.id == user.id
 
       assert {:error, :unauthorized} = Accounts.authenticate_user(user.email, "wrong_password")
-      assert {:error, :unauthorized} = Accounts.authenticate_user("nonexistent@example.com", "password123")
+
+      assert {:error, :unauthorized} =
+               Accounts.authenticate_user("nonexistent@example.com", "password123")
     end
   end
 
@@ -48,7 +50,8 @@ defmodule UptimeMonitor.AccountsTest do
     end
 
     test "create_tenant/2 creates a tenant and makes the creator user the owner", %{user: user} do
-      assert {:ok, %{tenant: tenant, membership: membership}} = Accounts.create_tenant(user, @tenant_attrs)
+      assert {:ok, %{tenant: tenant, membership: membership}} =
+               Accounts.create_tenant(user, @tenant_attrs)
 
       assert tenant.name == "ACME Corp"
       assert tenant.slug == "acme-corp"
@@ -68,7 +71,9 @@ defmodule UptimeMonitor.AccountsTest do
       assert Accounts.list_tenants_by_user(user) == []
 
       {:ok, %{tenant: tenant1}} = Accounts.create_tenant(user, @tenant_attrs)
-      {:ok, %{tenant: tenant2}} = Accounts.create_tenant(user, %{name: "Org Two", slug: "org-two"})
+
+      {:ok, %{tenant: tenant2}} =
+        Accounts.create_tenant(user, %{name: "Org Two", slug: "org-two"})
 
       tenants = Accounts.list_tenants_by_user(user)
       assert length(tenants) == 2
@@ -80,21 +85,30 @@ defmodule UptimeMonitor.AccountsTest do
   describe "membership invitations and edits" do
     setup do
       {:ok, owner} = Accounts.register_user(@valid_user_attrs)
-      {:ok, other_user} = Accounts.register_user(%{email: "member@example.com", password: "password123"})
+
+      {:ok, other_user} =
+        Accounts.register_user(%{email: "member@example.com", password: "password123"})
+
       {:ok, %{tenant: tenant}} = Accounts.create_tenant(owner, @tenant_attrs)
 
       %{owner: owner, other_user: other_user, tenant: tenant}
     end
 
-    test "invite_member/3 links user to tenant with designated role", %{tenant: tenant, other_user: other_user} do
-      assert {:ok, %Membership{} = membership} = Accounts.invite_member(tenant, other_user.email, "editor")
+    test "invite_member/3 links user to tenant with designated role", %{
+      tenant: tenant,
+      other_user: other_user
+    } do
+      assert {:ok, %Membership{} = membership} =
+               Accounts.invite_member(tenant, other_user.email, "editor")
+
       assert membership.user_id == other_user.id
       assert membership.tenant_id == tenant.id
       assert membership.role == "editor"
     end
 
     test "invite_member/3 returns error if user does not exist", %{tenant: tenant} do
-      assert {:error, :user_not_found} = Accounts.invite_member(tenant, "nonexistent@example.com", "viewer")
+      assert {:error, :user_not_found} =
+               Accounts.invite_member(tenant, "nonexistent@example.com", "viewer")
     end
 
     test "update_member_role/3 updates member role", %{tenant: tenant, other_user: other_user} do
@@ -103,7 +117,11 @@ defmodule UptimeMonitor.AccountsTest do
       assert updated.role == "admin"
     end
 
-    test "remove_member/2 deletes member from tenant, but prevents owner removal", %{tenant: tenant, owner: owner, other_user: other_user} do
+    test "remove_member/2 deletes member from tenant, but prevents owner removal", %{
+      tenant: tenant,
+      owner: owner,
+      other_user: other_user
+    } do
       {:ok, _membership} = Accounts.invite_member(tenant, other_user.email, "viewer")
       assert {:ok, _deleted} = Accounts.remove_member(tenant, other_user.id)
       assert Accounts.get_membership(tenant.id, other_user.id) == nil

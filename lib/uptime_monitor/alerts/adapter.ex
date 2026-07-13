@@ -11,7 +11,8 @@ defprotocol UptimeMonitor.Alerts.Adapter do
 end
 
 defimpl UptimeMonitor.Alerts.Adapter, for: UptimeMonitor.Alerts.NotificationChannel do
-  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) :: {:ok, term()} | {:error, term()}
+  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) ::
+          {:ok, term()} | {:error, term()}
   def deliver(channel, event) do
     case channel.type do
       "platform" -> UptimeMonitor.Alerts.Adapters.Platform.deliver(channel, event)

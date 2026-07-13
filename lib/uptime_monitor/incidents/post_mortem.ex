@@ -6,20 +6,21 @@ defmodule UptimeMonitor.Incidents.PostMortem do
   alias UptimeMonitor.Accounts.User
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    title: String.t() | nil,
-    content: String.t() | nil,
-    incident_id: pos_integer() | nil,
-    incident: Incident.t() | Ecto.Association.NotLoaded.t(),
-    created_by_id: pos_integer() | nil,
-    created_by: User.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          title: String.t() | nil,
+          content: String.t() | nil,
+          incident_id: pos_integer() | nil,
+          incident: Incident.t() | Ecto.Association.NotLoaded.t(),
+          created_by_id: pos_integer() | nil,
+          created_by: User.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "post_mortems" do
     field :title, :string
-    field :content, :string # Must use :string even for database text/markdown columns
+    # Must use :string even for database text/markdown columns
+    field :content, :string
 
     belongs_to :incident, Incident
     belongs_to :created_by, User

@@ -18,12 +18,13 @@ defmodule UptimeMonitor.Metrics do
 
     query =
       from d in DailyRollup,
-      where: d.monitor_id == ^monitor.id and d.date >= ^cutoff_date,
-      select: {sum(d.total_checks), sum(d.failed_checks)}
+        where: d.monitor_id == ^monitor.id and d.date >= ^cutoff_date,
+        select: {sum(d.total_checks), sum(d.failed_checks)}
 
     case Repo.one(query) do
       {total, failed} when not is_nil(total) ->
         Calculator.calculate_uptime(total, failed)
+
       _ ->
         100.0
     end
@@ -38,12 +39,13 @@ defmodule UptimeMonitor.Metrics do
 
     query =
       from d in DailyRollup,
-      where: d.monitor_id == ^monitor.id and d.date >= ^cutoff_date,
-      select: {sum(d.total_checks), sum(d.total_latency_ms)}
+        where: d.monitor_id == ^monitor.id and d.date >= ^cutoff_date,
+        select: {sum(d.total_checks), sum(d.total_latency_ms)}
 
     case Repo.one(query) do
       {total, total_latency} when not is_nil(total) ->
         Calculator.calculate_average_latency(total, total_latency)
+
       _ ->
         0.0
     end

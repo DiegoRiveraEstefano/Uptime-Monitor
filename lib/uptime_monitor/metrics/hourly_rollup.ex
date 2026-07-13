@@ -5,16 +5,16 @@ defmodule UptimeMonitor.Metrics.HourlyRollup do
   alias UptimeMonitor.Monitors.Monitor
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    hour: DateTime.t() | nil,
-    total_checks: pos_integer() | nil,
-    failed_checks: pos_integer() | nil,
-    total_latency_ms: pos_integer() | nil,
-    monitor_id: pos_integer() | nil,
-    monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          hour: DateTime.t() | nil,
+          total_checks: pos_integer() | nil,
+          failed_checks: pos_integer() | nil,
+          total_latency_ms: pos_integer() | nil,
+          monitor_id: pos_integer() | nil,
+          monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "hourly_rollups" do
     field :hour, :utc_datetime

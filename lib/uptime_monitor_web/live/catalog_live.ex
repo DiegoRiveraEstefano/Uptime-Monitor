@@ -29,7 +29,9 @@ defmodule UptimeMonitorWeb.CatalogLive do
       <div class="space-y-12 pb-24">
         <!-- Title and Introduction -->
         <div class="border-b border-slate-100 pb-6">
-          <h1 class="text-4xl font-extrabold font-sans text-slate-900 tracking-tight">Component Catalog</h1>
+          <h1 class="text-4xl font-extrabold font-sans text-slate-900 tracking-tight">
+            Component Catalog
+          </h1>
           <p class="text-sm text-slate-500 mt-2">
             Visual library showcasing our minimal light design system (White background + Pastel Purple accents).
           </p>
@@ -38,8 +40,10 @@ defmodule UptimeMonitorWeb.CatalogLive do
         <!-- 1. Buttons Section -->
         <section class="space-y-4">
           <h2 class="text-2xl font-bold font-sans text-slate-800">Buttons</h2>
-          <p class="text-xs text-slate-400">Pastel purple accents, slate borders, and ghost action indicators.</p>
-          
+          <p class="text-xs text-slate-400">
+            Pastel purple accents, slate borders, and ghost action indicators.
+          </p>
+
           <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div class="flex flex-wrap items-center gap-4">
               <UptimeComponents.primary_button>
@@ -56,7 +60,7 @@ defmodule UptimeMonitorWeb.CatalogLive do
                 Settings
               </UptimeComponents.ghost_button>
             </div>
-            
+
             <div class="bg-white rounded-xl p-4 border border-slate-100">
               <pre class="text-xs text-slate-600 overflow-x-auto"><code phx-no-curly-interpolation>
                 &lt;.primary_button&gt;Action&lt;/.primary_button&gt;
@@ -70,8 +74,10 @@ defmodule UptimeMonitorWeb.CatalogLive do
         <!-- 2. Badges Section -->
         <section class="space-y-4">
           <h2 class="text-2xl font-bold font-sans text-slate-800">Status Badges</h2>
-          <p class="text-xs text-slate-400">Pills to represent health checks states. DOWN state utilizes a soft breathing pulse.</p>
-          
+          <p class="text-xs text-slate-400">
+            Pills to represent health checks states. DOWN state utilizes a soft breathing pulse.
+          </p>
+
           <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div class="flex flex-wrap gap-4">
               <UptimeComponents.status_badge status="up" />
@@ -94,8 +100,10 @@ defmodule UptimeMonitorWeb.CatalogLive do
         <!-- 3. Form Inputs -->
         <section class="space-y-4">
           <h2 class="text-2xl font-bold font-sans text-slate-800">Form Inputs</h2>
-          <p class="text-xs text-slate-400">Clean input boxes with custom padding, borders, and focused purple outline highlights.</p>
-          
+          <p class="text-xs text-slate-400">
+            Clean input boxes with custom padding, borders, and focused purple outline highlights.
+          </p>
+
           <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div class="max-w-md bg-white p-6 rounded-xl border border-slate-100">
               <UptimeComponents.custom_input
@@ -120,8 +128,10 @@ defmodule UptimeMonitorWeb.CatalogLive do
         <!-- 4. Metric & KPI Cards -->
         <section class="space-y-4">
           <h2 class="text-2xl font-bold font-sans text-slate-800">Metrics Cards</h2>
-          <p class="text-xs text-slate-400">Cards for summarizing SLA percentages and health latency aggregates.</p>
-          
+          <p class="text-xs text-slate-400">
+            Cards for summarizing SLA percentages and health latency aggregates.
+          </p>
+
           <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <UptimeComponents.metric_card
@@ -148,8 +158,10 @@ defmodule UptimeMonitorWeb.CatalogLive do
         <!-- 5. Monitor Cards -->
         <section class="space-y-4">
           <h2 class="text-2xl font-bold font-sans text-slate-800">Monitor Cards</h2>
-          <p class="text-xs text-slate-400">Target monitor detail block demonstrating statuses and aggregate metrics.</p>
-          
+          <p class="text-xs text-slate-400">
+            Target monitor detail block demonstrating statuses and aggregate metrics.
+          </p>
+
           <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <UptimeComponents.monitor_card

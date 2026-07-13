@@ -5,15 +5,15 @@ defmodule UptimeMonitor.Alerts.PlatformNotification do
   alias UptimeMonitor.Accounts.Tenant
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    title: String.t() | nil,
-    message: String.t() | nil,
-    read: boolean() | nil,
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          title: String.t() | nil,
+          message: String.t() | nil,
+          read: boolean() | nil,
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "platform_notifications" do
     field :title, :string

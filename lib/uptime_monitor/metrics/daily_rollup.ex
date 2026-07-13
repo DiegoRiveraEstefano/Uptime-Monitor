@@ -5,16 +5,16 @@ defmodule UptimeMonitor.Metrics.DailyRollup do
   alias UptimeMonitor.Monitors.Monitor
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    date: Date.t() | nil,
-    total_checks: pos_integer() | nil,
-    failed_checks: pos_integer() | nil,
-    total_latency_ms: pos_integer() | nil,
-    monitor_id: pos_integer() | nil,
-    monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          date: Date.t() | nil,
+          total_checks: pos_integer() | nil,
+          failed_checks: pos_integer() | nil,
+          total_latency_ms: pos_integer() | nil,
+          monitor_id: pos_integer() | nil,
+          monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "daily_rollups" do
     field :date, :date

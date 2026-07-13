@@ -5,17 +5,17 @@ defmodule UptimeMonitor.Monitors.Heartbeat do
   alias UptimeMonitor.Accounts.Tenant
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    name: String.t() | nil,
-    token: String.t() | nil,
-    expected_interval_seconds: pos_integer() | nil,
-    grace_period_seconds: pos_integer() | nil,
-    last_pinged_at: DateTime.t() | nil,
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          name: String.t() | nil,
+          token: String.t() | nil,
+          expected_interval_seconds: pos_integer() | nil,
+          grace_period_seconds: pos_integer() | nil,
+          last_pinged_at: DateTime.t() | nil,
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "heartbeats" do
     field :name, :string

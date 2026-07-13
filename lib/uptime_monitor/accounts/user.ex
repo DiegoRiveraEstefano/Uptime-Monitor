@@ -5,14 +5,14 @@ defmodule UptimeMonitor.Accounts.User do
   alias UptimeMonitor.Accounts.Membership
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    email: String.t() | nil,
-    password_hash: String.t() | nil,
-    is_active: boolean() | nil,
-    memberships: [Membership.t()] | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          email: String.t() | nil,
+          password_hash: String.t() | nil,
+          is_active: boolean() | nil,
+          memberships: [Membership.t()] | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "users" do
     field :email, :string
@@ -43,7 +43,8 @@ defmodule UptimeMonitor.Accounts.User do
   Verifies if a password matches the hashed password.
   """
   @spec valid_password?(t(), String.t()) :: boolean()
-  def valid_password?(%__MODULE__{password_hash: password_hash}, password) when is_binary(password_hash) do
+  def valid_password?(%__MODULE__{password_hash: password_hash}, password)
+      when is_binary(password_hash) do
     case String.split(password_hash, "$") do
       [iterations_str, salt_b64, hash_b64] ->
         iterations = String.to_integer(iterations_str)
@@ -51,6 +52,7 @@ defmodule UptimeMonitor.Accounts.User do
         hash = Base.decode64!(hash_b64)
         computed_hash = :crypto.pbkdf2_hmac(:sha256, password, salt, iterations, 32)
         Plug.Crypto.secure_compare(computed_hash, hash)
+
       _ ->
         false
     end

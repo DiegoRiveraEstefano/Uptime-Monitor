@@ -7,19 +7,19 @@ defmodule UptimeMonitor.Incidents.Incident do
   alias UptimeMonitor.Incidents.PostMortem
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    status: String.t() | nil,
-    opened_at: DateTime.t() | nil,
-    resolved_at: DateTime.t() | nil,
-    downtime_seconds: integer() | nil,
-    monitor_id: pos_integer() | nil,
-    monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    post_mortem: PostMortem.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          status: String.t() | nil,
+          opened_at: DateTime.t() | nil,
+          resolved_at: DateTime.t() | nil,
+          downtime_seconds: integer() | nil,
+          monitor_id: pos_integer() | nil,
+          monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          post_mortem: PostMortem.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "incidents" do
     field :status, :string, default: "open"

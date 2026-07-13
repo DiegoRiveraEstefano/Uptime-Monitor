@@ -51,9 +51,12 @@ defmodule UptimeMonitor.Monitors do
     |> Multi.insert(:monitor, Monitor.changeset(%Monitor{tenant_id: tenant.id}, attrs))
     |> Multi.run(:engine_registration, fn _repo, %{monitor: monitor} ->
       if monitor.active do
-        UptimeMonitor.Monitors.Engine.register(monitor)
+        case UptimeMonitor.Monitors.Engine.register(monitor) do
+          :ok -> {:ok, monitor}
+          {:error, reason} -> {:error, reason}
+        end
       else
-        :ok
+        {:ok, monitor}
       end
     end)
     |> Repo.transaction()
@@ -74,11 +77,14 @@ defmodule UptimeMonitor.Monitors do
       |> Multi.run(:engine_update, fn _repo, %{monitor: updated_monitor} ->
         # Deregister old worker and register new one if active
         UptimeMonitor.Monitors.Engine.deregister(monitor)
-        
+
         if updated_monitor.active do
-          UptimeMonitor.Monitors.Engine.register(updated_monitor)
+          case UptimeMonitor.Monitors.Engine.register(updated_monitor) do
+            :ok -> {:ok, updated_monitor}
+            {:error, reason} -> {:error, reason}
+          end
         else
-          :ok
+          {:ok, updated_monitor}
         end
       end)
       |> Repo.transaction()
@@ -172,6 +178,7 @@ defmodule UptimeMonitor.Monitors do
     case Repo.get_by(Heartbeat, token: token) do
       nil ->
         {:error, :not_found}
+
       heartbeat ->
         heartbeat
         |> Ecto.Changeset.change(last_pinged_at: DateTime.utc_now())

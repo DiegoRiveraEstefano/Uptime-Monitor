@@ -5,13 +5,13 @@ defmodule UptimeMonitor.Accounts.Tenant do
   alias UptimeMonitor.Accounts.Membership
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    name: String.t() | nil,
-    slug: String.t() | nil,
-    memberships: [Membership.t()] | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          name: String.t() | nil,
+          slug: String.t() | nil,
+          memberships: [Membership.t()] | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "tenants" do
     field :name, :string

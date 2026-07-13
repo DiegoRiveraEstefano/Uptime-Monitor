@@ -50,7 +50,7 @@ defmodule UptimeMonitorWeb.LoginLive do
 
         <div class="text-center border-t border-slate-50 pt-4">
           <p class="text-xs text-slate-400">
-            Don't have an account? 
+            Don't have an account?
             <a href="/register" class="text-[hsl(268,60%,50%)] hover:underline font-semibold ml-1">Sign Up</a>
           </p>
         </div>

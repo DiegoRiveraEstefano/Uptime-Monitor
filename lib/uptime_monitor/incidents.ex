@@ -17,8 +17,9 @@ defmodule UptimeMonitor.Incidents do
   @spec report_failure(Monitor.t(), String.t() | nil) :: {:ok, Incident.t()} | {:error, any()}
   def report_failure(%Monitor{} = monitor, _reason) do
     # Check if there is an active incident for this monitor
-    query = from i in Incident, where: i.monitor_id == ^monitor.id and i.status == "open", limit: 1
-    
+    query =
+      from i in Incident, where: i.monitor_id == ^monitor.id and i.status == "open", limit: 1
+
     case Repo.one(query) do
       %Incident{} = existing_incident ->
         {:ok, existing_incident}
@@ -38,6 +39,7 @@ defmodule UptimeMonitor.Incidents do
             # Dispatch outage alerts asynchronously
             UptimeMonitor.Alerts.dispatch_incident_alert(incident, :opened)
             {:ok, incident}
+
           {:error, reason} ->
             {:error, reason}
         end
@@ -47,9 +49,11 @@ defmodule UptimeMonitor.Incidents do
   @doc """
   Logs a monitor recovery. Resolves any open incident, computes the total downtime, and dispatches recovery alerts.
   """
-  @spec report_recovery(Monitor.t()) :: {:ok, Incident.t()} | {:error, :no_active_incident | any()}
+  @spec report_recovery(Monitor.t()) ::
+          {:ok, Incident.t()} | {:error, :no_active_incident | any()}
   def report_recovery(%Monitor{} = monitor) do
-    query = from i in Incident, where: i.monitor_id == ^monitor.id and i.status == "open", limit: 1
+    query =
+      from i in Incident, where: i.monitor_id == ^monitor.id and i.status == "open", limit: 1
 
     case Repo.one(query) do
       nil ->
@@ -71,6 +75,7 @@ defmodule UptimeMonitor.Incidents do
             # Dispatch recovery alerts asynchronously
             UptimeMonitor.Alerts.dispatch_incident_alert(resolved_incident, :resolved)
             {:ok, resolved_incident}
+
           {:error, reason} ->
             {:error, reason}
         end
@@ -107,7 +112,8 @@ defmodule UptimeMonitor.Incidents do
   @doc """
   Creates a post-mortem report for an incident.
   """
-  @spec create_post_mortem(User.t(), Incident.t(), map()) :: {:ok, PostMortem.t()} | {:error, any()}
+  @spec create_post_mortem(User.t(), Incident.t(), map()) ::
+          {:ok, PostMortem.t()} | {:error, any()}
   def create_post_mortem(%User{} = user, %Incident{} = incident, attrs) do
     %PostMortem{incident_id: incident.id, created_by_id: user.id}
     |> PostMortem.changeset(attrs)

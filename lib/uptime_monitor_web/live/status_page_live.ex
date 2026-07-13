@@ -16,7 +16,7 @@ defmodule UptimeMonitorWeb.StatusPageLive do
         if status_page.is_public do
           # Load visible monitors
           all_monitors = Monitors.list_monitors(status_page.tenant_id)
-          
+
           visible_monitors =
             Enum.filter(all_monitors, fn monitor ->
               monitor.id in status_page.visible_monitor_ids
@@ -26,10 +26,14 @@ defmodule UptimeMonitorWeb.StatusPageLive do
           monitors_with_stats =
             Enum.map(visible_monitors, fn monitor ->
               # Check if monitor has open incident
-              query = from i in Incidents.Incident, where: i.monitor_id == ^monitor.id and i.status == "open", limit: 1
+              query =
+                from i in Incidents.Incident,
+                  where: i.monitor_id == ^monitor.id and i.status == "open",
+                  limit: 1
+
               has_open_incident = UptimeMonitor.Repo.exists?(query)
               status = if has_open_incident, do: "down", else: "up"
-              
+
               uptime = Metrics.get_uptime_percentage(monitor, 30)
               latency = Metrics.get_average_latency(monitor, 30)
 

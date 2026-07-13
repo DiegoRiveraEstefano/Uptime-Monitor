@@ -6,7 +6,8 @@ defmodule UptimeMonitor.Alerts.Adapters.Email do
 
   alias UptimeMonitor.Mailer
 
-  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) :: {:ok, term()} | {:error, term()}
+  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) ::
+          {:ok, term()} | {:error, term()}
   def deliver(channel, event) do
     to_email = Map.get(channel.config, "to")
     monitor = event.monitor
@@ -29,6 +30,7 @@ defmodule UptimeMonitor.Alerts.Adapters.Email do
           URL: #{monitor.url}
           Incident started at: #{incident.opened_at}
           """
+
         :resolved ->
           """
           Service Recovered!

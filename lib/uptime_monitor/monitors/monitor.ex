@@ -6,18 +6,18 @@ defmodule UptimeMonitor.Monitors.Monitor do
   alias UptimeMonitor.Monitors.CheckResult
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    name: String.t() | nil,
-    url: String.t() | nil,
-    interval_seconds: pos_integer() | nil,
-    active: boolean() | nil,
-    encrypted_headers: map() | nil,
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    check_results: [CheckResult.t()] | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          name: String.t() | nil,
+          url: String.t() | nil,
+          interval_seconds: pos_integer() | nil,
+          active: boolean() | nil,
+          encrypted_headers: map() | nil,
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          check_results: [CheckResult.t()] | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "monitors" do
     field :name, :string
@@ -57,8 +57,10 @@ defmodule UptimeMonitor.Monitors.Monitor do
   defp validate_url(changeset, field) do
     validate_change(changeset, field, fn _field, url ->
       case URI.new(url) do
-        {:ok, %URI{scheme: scheme, host: host}} when scheme in ["http", "https"] and not is_nil(host) ->
+        {:ok, %URI{scheme: scheme, host: host}}
+        when scheme in ["http", "https"] and not is_nil(host) ->
           []
+
         _ ->
           [{field, "must be a valid HTTP or HTTPS URL"}]
       end

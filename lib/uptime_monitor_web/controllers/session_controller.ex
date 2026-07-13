@@ -31,6 +31,7 @@ defmodule UptimeMonitorWeb.SessionController do
       {:ok, user} ->
         # 2. Initialize default workspace tenant
         tenant_slug = "my-workspace"
+
         unique_slug =
           case Accounts.get_tenant_by_slug(tenant_slug) do
             nil -> tenant_slug
@@ -74,6 +75,7 @@ defmodule UptimeMonitorWeb.SessionController do
     case Accounts.list_tenants_by_user(user) do
       [] ->
         tenant_slug = "my-workspace"
+
         unique_slug =
           case Accounts.get_tenant_by_slug(tenant_slug) do
             nil -> tenant_slug

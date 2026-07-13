@@ -55,7 +55,8 @@ defmodule UptimeMonitor.Accounts do
   Creates a tenant workspace and automatically maps the creator user as the tenant's owner.
   Uses Ecto.Multi to guarantee transaction atomicity.
   """
-  @spec create_tenant(User.t(), map()) :: {:ok, %{tenant: Tenant.t(), membership: Membership.t()}} | {:error, any()}
+  @spec create_tenant(User.t(), map()) ::
+          {:ok, %{tenant: Tenant.t(), membership: Membership.t()}} | {:error, any()}
   def create_tenant(%User{} = user, attrs) do
     Multi.new()
     |> Multi.insert(:tenant, Tenant.changeset(%Tenant{}, attrs))
@@ -67,6 +68,7 @@ defmodule UptimeMonitor.Accounts do
     |> case do
       {:ok, %{tenant: tenant, membership: membership}} ->
         {:ok, %{tenant: tenant, membership: membership}}
+
       {:error, _failed_op, reason, _changes} ->
         {:error, reason}
     end
@@ -129,11 +131,13 @@ defmodule UptimeMonitor.Accounts do
   @doc """
   Invites/Adds an existing user to a tenant.
   """
-  @spec invite_member(Tenant.t(), String.t(), String.t()) :: {:ok, Membership.t()} | {:error, any()}
+  @spec invite_member(Tenant.t(), String.t(), String.t()) ::
+          {:ok, Membership.t()} | {:error, any()}
   def invite_member(%Tenant{} = tenant, email, role) when is_binary(email) do
     case get_user_by_email(email) do
       nil ->
         {:error, :user_not_found}
+
       user ->
         %Membership{user_id: user.id, tenant_id: tenant.id}
         |> Membership.changeset(%{role: role})
@@ -144,11 +148,13 @@ defmodule UptimeMonitor.Accounts do
   @doc """
   Updates a member's role in a tenant.
   """
-  @spec update_member_role(Tenant.t(), pos_integer(), String.t()) :: {:ok, Membership.t()} | {:error, any()}
+  @spec update_member_role(Tenant.t(), pos_integer(), String.t()) ::
+          {:ok, Membership.t()} | {:error, any()}
   def update_member_role(%Tenant{} = tenant, user_id, new_role) do
     case get_membership(tenant.id, user_id) do
       nil ->
         {:error, :membership_not_found}
+
       membership ->
         membership
         |> Membership.changeset(%{role: new_role})
@@ -164,6 +170,7 @@ defmodule UptimeMonitor.Accounts do
     case get_membership(tenant.id, user_id) do
       nil ->
         {:error, :membership_not_found}
+
       membership ->
         if membership.role == "owner" do
           {:error, :cannot_remove_owner}

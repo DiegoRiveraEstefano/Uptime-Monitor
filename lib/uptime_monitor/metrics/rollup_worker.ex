@@ -29,7 +29,7 @@ defmodule UptimeMonitor.Metrics.RollupWorker do
   @impl GenServer
   def handle_info(:check_rollup, state) do
     now = DateTime.utc_now()
-    
+
     # Run rollups
     run_aggregations(now)
 
@@ -69,14 +69,14 @@ defmodule UptimeMonitor.Metrics.RollupWorker do
 
     query =
       from r in CheckResult,
-      where: r.inserted_at >= ^start_time and r.inserted_at <= ^end_time,
-      group_by: r.monitor_id,
-      select: {
-        r.monitor_id,
-        count(r.id),
-        sum(fragment("CASE WHEN ? = 'down' THEN 1 ELSE 0 END", r.status)),
-        sum(r.latency_ms)
-      }
+        where: r.inserted_at >= ^start_time and r.inserted_at <= ^end_time,
+        group_by: r.monitor_id,
+        select: {
+          r.monitor_id,
+          count(r.id),
+          sum(fragment("CASE WHEN ? = 'down' THEN 1 ELSE 0 END", r.status)),
+          sum(r.latency_ms)
+        }
 
     Repo.all(query)
     |> Enum.each(fn {monitor_id, total, failed, total_latency} ->
@@ -109,14 +109,14 @@ defmodule UptimeMonitor.Metrics.RollupWorker do
 
     query =
       from h in HourlyRollup,
-      where: h.hour >= ^start_time and h.hour <= ^end_time,
-      group_by: h.monitor_id,
-      select: {
-        h.monitor_id,
-        sum(h.total_checks),
-        sum(h.failed_checks),
-        sum(h.total_latency_ms)
-      }
+        where: h.hour >= ^start_time and h.hour <= ^end_time,
+        group_by: h.monitor_id,
+        select: {
+          h.monitor_id,
+          sum(h.total_checks),
+          sum(h.failed_checks),
+          sum(h.total_latency_ms)
+        }
 
     Repo.all(query)
     |> Enum.each(fn {monitor_id, total, failed, total_latency} ->

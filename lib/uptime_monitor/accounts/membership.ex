@@ -5,15 +5,15 @@ defmodule UptimeMonitor.Accounts.Membership do
   alias UptimeMonitor.Accounts.{User, Tenant}
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    role: String.t() | nil,
-    user_id: pos_integer() | nil,
-    user: User.t() | Ecto.Association.NotLoaded.t(),
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          role: String.t() | nil,
+          user_id: pos_integer() | nil,
+          user: User.t() | Ecto.Association.NotLoaded.t(),
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "memberships" do
     field :role, :string

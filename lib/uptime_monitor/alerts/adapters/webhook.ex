@@ -3,7 +3,8 @@ defmodule UptimeMonitor.Alerts.Adapters.Webhook do
   Dispatches JSON alert payloads to custom webhook endpoints.
   """
 
-  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) :: {:ok, term()} | {:error, term()}
+  @spec deliver(UptimeMonitor.Alerts.NotificationChannel.t(), map()) ::
+          {:ok, term()} | {:error, term()}
   def deliver(channel, event) do
     url = Map.get(channel.config, "url")
     monitor = event.monitor
@@ -25,11 +26,13 @@ defmodule UptimeMonitor.Alerts.Adapters.Webhook do
       }
     }
 
-    case Req.post(url, json: payload, connect_timeout: 5000, receive_timeout: 5000) do
+    case Req.post(url, json: payload, connect_options: [timeout: 5000], receive_timeout: 5000) do
       {:ok, %Req.Response{status: status}} when status >= 200 and status < 300 ->
         {:ok, :dispatched}
+
       {:ok, %Req.Response{status: status}} ->
         {:error, "Webhook returned status: #{status}"}
+
       {:error, reason} ->
         {:error, reason}
     end

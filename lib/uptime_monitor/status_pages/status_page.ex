@@ -5,16 +5,16 @@ defmodule UptimeMonitor.StatusPages.StatusPage do
   alias UptimeMonitor.Accounts.Tenant
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    title: String.t() | nil,
-    slug: String.t() | nil,
-    is_public: boolean() | nil,
-    visible_monitor_ids: [pos_integer()] | nil,
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          title: String.t() | nil,
+          slug: String.t() | nil,
+          is_public: boolean() | nil,
+          visible_monitor_ids: [pos_integer()] | nil,
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "status_pages" do
     field :title, :string

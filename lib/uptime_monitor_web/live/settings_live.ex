@@ -20,7 +20,9 @@ defmodule UptimeMonitorWeb.SettingsLive do
         # Forms setup
         tenant_form = Phoenix.Component.to_form(Accounts.Tenant.changeset(tenant, %{}))
         invite_form = Phoenix.Component.to_form(%{"email" => "", "role" => "viewer"}, as: :invite)
-        channel_form = Phoenix.Component.to_form(%{"type" => "email", "target" => ""}, as: :channel)
+
+        channel_form =
+          Phoenix.Component.to_form(%{"type" => "email", "target" => ""}, as: :channel)
 
         socket =
           socket
@@ -58,14 +60,18 @@ defmodule UptimeMonitorWeb.SettingsLive do
             {:noreply,
              socket
              |> assign(:current_tenant, updated_tenant)
-             |> assign(:tenant_form, Phoenix.Component.to_form(Accounts.Tenant.changeset(updated_tenant, %{})))}
+             |> assign(
+               :tenant_form,
+               Phoenix.Component.to_form(Accounts.Tenant.changeset(updated_tenant, %{}))
+             )}
           end
 
         {:error, changeset} ->
           {:noreply, assign(socket, tenant_form: Phoenix.Component.to_form(changeset))}
       end
     else
-      {:noreply, put_flash(socket, :error, "You do not have permissions to modify workspace details.")}
+      {:noreply,
+       put_flash(socket, :error, "You do not have permissions to modify workspace details.")}
     end
   end
 
@@ -81,13 +87,17 @@ defmodule UptimeMonitorWeb.SettingsLive do
           socket =
             socket
             |> assign(:members, members)
-            |> assign(:invite_form, Phoenix.Component.to_form(%{"email" => "", "role" => "viewer"}, as: :invite))
+            |> assign(
+              :invite_form,
+              Phoenix.Component.to_form(%{"email" => "", "role" => "viewer"}, as: :invite)
+            )
             |> put_flash(:info, "Member successfully added to the workspace.")
 
           {:noreply, socket}
 
         {:error, :user_not_found} ->
-          {:noreply, put_flash(socket, :error, "No registered user found with the email: #{email}")}
+          {:noreply,
+           put_flash(socket, :error, "No registered user found with the email: #{email}")}
 
         {:error, changeset} ->
           error_msg =
@@ -148,7 +158,8 @@ defmodule UptimeMonitorWeb.SettingsLive do
             {:noreply, put_flash(socket, :error, "Failed to remove member: #{inspect(reason)}")}
         end
       else
-        {:noreply, put_flash(socket, :error, "Only owners and administrators can remove members.")}
+        {:noreply,
+         put_flash(socket, :error, "Only owners and administrators can remove members.")}
       end
     end
   end
@@ -173,7 +184,10 @@ defmodule UptimeMonitorWeb.SettingsLive do
           socket =
             socket
             |> assign(:channels, channels)
-            |> assign(:channel_form, Phoenix.Component.to_form(%{"type" => "email", "target" => ""}, as: :channel))
+            |> assign(
+              :channel_form,
+              Phoenix.Component.to_form(%{"type" => "email", "target" => ""}, as: :channel)
+            )
             |> put_flash(:info, "Alert notification integration added successfully.")
 
           {:noreply, socket}
@@ -187,7 +201,8 @@ defmodule UptimeMonitorWeb.SettingsLive do
           {:noreply, put_flash(socket, :error, "Failed to create integration: #{error_msg}")}
       end
     else
-      {:noreply, put_flash(socket, :error, "Only owners and administrators can manage alert channels.")}
+      {:noreply,
+       put_flash(socket, :error, "Only owners and administrators can manage alert channels.")}
     end
   end
 
@@ -207,10 +222,12 @@ defmodule UptimeMonitorWeb.SettingsLive do
            |> put_flash(:info, "Notification integration deleted.")}
 
         {:error, reason} ->
-          {:noreply, put_flash(socket, :error, "Failed to delete integration: #{inspect(reason)}")}
+          {:noreply,
+           put_flash(socket, :error, "Failed to delete integration: #{inspect(reason)}")}
       end
     else
-      {:noreply, put_flash(socket, :error, "Only owners and administrators can manage alert channels.")}
+      {:noreply,
+       put_flash(socket, :error, "Only owners and administrators can manage alert channels.")}
     end
   end
 

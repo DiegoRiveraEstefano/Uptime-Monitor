@@ -14,7 +14,7 @@ defmodule UptimeMonitorWeb.MonitorLive do
     case get_current_context(session, slug) do
       {:ok, user, tenant, membership} ->
         monitor_id = String.to_integer(id)
-        
+
         case Monitors.get_monitor(tenant.id, monitor_id) do
           {:ok, monitor} ->
             # Fetch stats
@@ -25,17 +25,17 @@ defmodule UptimeMonitorWeb.MonitorLive do
             check_results =
               UptimeMonitor.Repo.all(
                 from r in Monitors.CheckResult,
-                where: r.monitor_id == ^monitor.id,
-                order_by: [desc: r.inserted_at],
-                limit: 15
+                  where: r.monitor_id == ^monitor.id,
+                  order_by: [desc: r.inserted_at],
+                  limit: 15
               )
 
             incidents =
               UptimeMonitor.Repo.all(
                 from i in Incidents.Incident,
-                where: i.monitor_id == ^monitor.id,
-                order_by: [desc: i.opened_at],
-                limit: 5
+                  where: i.monitor_id == ^monitor.id,
+                  order_by: [desc: i.opened_at],
+                  limit: 5
               )
 
             # Prepare edit changeset
@@ -87,7 +87,10 @@ defmodule UptimeMonitorWeb.MonitorLive do
           |> assign(:uptime, uptime)
           |> assign(:latency, latency)
           |> assign(:show_edit_form, false)
-          |> assign(:edit_form, Phoenix.Component.to_form(Monitors.Monitor.changeset(updated, %{})))
+          |> assign(
+            :edit_form,
+            Phoenix.Component.to_form(Monitors.Monitor.changeset(updated, %{}))
+          )
           |> put_flash(:info, "Monitor configuration updated successfully.")
 
         {:noreply, socket}

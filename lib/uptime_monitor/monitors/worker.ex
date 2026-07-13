@@ -7,10 +7,10 @@ defmodule UptimeMonitor.Monitors.Worker do
   alias UptimeMonitor.Monitors.{Monitor, HttpChecker}
 
   @type state :: %{
-    monitor: Monitor.t(),
-    current_task: {reference(), pid()} | nil,
-    last_status: String.t()
-  }
+          monitor: Monitor.t(),
+          current_task: {reference(), pid()} | nil,
+          last_status: String.t()
+        }
 
   # --- Client API ---
 
@@ -51,23 +51,25 @@ defmodule UptimeMonitor.Monitors.Worker do
   def handle_info({ref, check_result}, %{current_task: {ref, _pid}} = state) do
     # 1. Demonitor task (Task.async automatically demonitors, so we just wait for DOWN)
     Process.demonitor(ref, [:flush])
-    
+
     # 2. Process check results
     {status, latency_ms, code, body} =
       case check_result do
         {:ok, latency, status_code} ->
           {"up", latency, status_code, nil}
+
         {:error, latency, reason, body_snippet} ->
           {"down", latency, nil, "#{reason}\n#{body_snippet}"}
       end
 
     # 3. Log results to database
-    {:ok, _result} = UptimeMonitor.Monitors.create_check_result(state.monitor, %{
-      status: status,
-      latency_ms: latency_ms,
-      response_code: code,
-      debug_response_body: body
-    })
+    {:ok, _result} =
+      UptimeMonitor.Monitors.create_check_result(state.monitor, %{
+        status: status,
+        latency_ms: latency_ms,
+        response_code: code,
+        debug_response_body: body
+      })
 
     # 4. Handle state transition and notify Incidents domain
     new_status = process_status_transition(state.monitor, state.last_status, status, body)
@@ -81,15 +83,22 @@ defmodule UptimeMonitor.Monitors.Worker do
   # Handle Task Failures / Crashes
   def handle_info({:DOWN, ref, :process, _pid, reason}, %{current_task: {ref, _task_pid}} = state) do
     # Log crash result to database
-    {:ok, _result} = UptimeMonitor.Monitors.create_check_result(state.monitor, %{
-      status: "down",
-      latency_ms: 0,
-      response_code: 500,
-      debug_response_body: "Process crash: #{inspect(reason)}"
-    })
+    {:ok, _result} =
+      UptimeMonitor.Monitors.create_check_result(state.monitor, %{
+        status: "down",
+        latency_ms: 0,
+        response_code: 500,
+        debug_response_body: "Process crash: #{inspect(reason)}"
+      })
 
     # Transition to down and notify incidents
-    new_status = process_status_transition(state.monitor, state.last_status, "down", "Process crashed: #{inspect(reason)}")
+    new_status =
+      process_status_transition(
+        state.monitor,
+        state.last_status,
+        "down",
+        "Process crashed: #{inspect(reason)}"
+      )
 
     # Schedule next check
     schedule_next_tick(state.monitor.interval_seconds)
@@ -133,6 +142,7 @@ defmodule UptimeMonitor.Monitors.Worker do
         if current_status == "down" do
           apply(UptimeMonitor.Incidents, :report_failure, [monitor, reason])
         end
+
         current_status
     end
   end

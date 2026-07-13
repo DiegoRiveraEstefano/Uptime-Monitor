@@ -23,7 +23,8 @@ defmodule UptimeMonitor.StatusPages do
   @doc """
   Gets a single status page scoped to a tenant.
   """
-  @spec get_status_page(pos_integer(), pos_integer()) :: {:ok, StatusPage.t()} | {:error, :not_found}
+  @spec get_status_page(pos_integer(), pos_integer()) ::
+          {:ok, StatusPage.t()} | {:error, :not_found}
   def get_status_page(tenant_id, id) do
     case Repo.one(from s in StatusPage, where: s.id == ^id and s.tenant_id == ^tenant_id) do
       nil -> {:error, :not_found}
@@ -55,7 +56,8 @@ defmodule UptimeMonitor.StatusPages do
   @doc """
   Updates a status page configuration.
   """
-  @spec update_status_page(Tenant.t(), StatusPage.t(), map()) :: {:ok, StatusPage.t()} | {:error, any()}
+  @spec update_status_page(Tenant.t(), StatusPage.t(), map()) ::
+          {:ok, StatusPage.t()} | {:error, any()}
   def update_status_page(%Tenant{} = tenant, %StatusPage{} = status_page, attrs) do
     if status_page.tenant_id == tenant.id do
       status_page

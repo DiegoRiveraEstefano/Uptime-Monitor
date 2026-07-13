@@ -9,7 +9,12 @@ defmodule UptimeMonitor.MetricsAndStatusPagesTest do
   alias UptimeMonitor.StatusPages.StatusPage
 
   @tenant_attrs %{name: "Org Metrics", slug: "org-metrics"}
-  @monitor_attrs %{name: "Ping Target", url: "https://ping.example.com", interval_seconds: 60, active: false}
+  @monitor_attrs %{
+    name: "Ping Target",
+    url: "https://ping.example.com",
+    interval_seconds: 60,
+    active: false
+  }
 
   setup do
     {:ok, user} = Accounts.register_user(%{email: "metrics@example.com", password: "password123"})
@@ -35,7 +40,7 @@ defmodule UptimeMonitor.MetricsAndStatusPagesTest do
   describe "hourly & daily rollups aggregation engine" do
     test "perform_hourly_rollup/1 consolidates raw checks into HourlyRollup", %{monitor: monitor} do
       hour = DateTime.utc_now() |> DateTime.truncate(:second)
-      
+
       # Log check results in database
       {:ok, _} = Monitors.create_check_result(monitor, %{status: "up", latency_ms: 100})
       {:ok, _} = Monitors.create_check_result(monitor, %{status: "up", latency_ms: 150})
@@ -78,7 +83,7 @@ defmodule UptimeMonitor.MetricsAndStatusPagesTest do
   describe "metrics context SLA retrievals" do
     setup %{monitor: monitor} do
       date = Date.utc_today()
-      
+
       # Insert daily rollup mock
       %DailyRollup{}
       |> DailyRollup.changeset(%{
@@ -97,13 +102,18 @@ defmodule UptimeMonitor.MetricsAndStatusPagesTest do
       assert Metrics.get_uptime_percentage(monitor, 7) == 99.0
     end
 
-    test "get_average_latency/2 calculates average latency from daily rollup table", %{monitor: monitor} do
+    test "get_average_latency/2 calculates average latency from daily rollup table", %{
+      monitor: monitor
+    } do
       assert Metrics.get_average_latency(monitor, 7) == 150.0
     end
   end
 
   describe "status pages CRUD and slug lookup" do
-    test "create_status_page/2 inserts a page linked to the tenant", %{tenant: tenant, monitor: monitor} do
+    test "create_status_page/2 inserts a page linked to the tenant", %{
+      tenant: tenant,
+      monitor: monitor
+    } do
       attrs = %{
         title: "ACME Live Status",
         slug: "acme-live",

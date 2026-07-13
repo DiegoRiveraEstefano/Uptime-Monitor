@@ -5,16 +5,16 @@ defmodule UptimeMonitor.Monitors.CheckResult do
   alias UptimeMonitor.Monitors.Monitor
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    status: String.t() | nil,
-    latency_ms: pos_integer() | nil,
-    response_code: integer() | nil,
-    debug_response_body: String.t() | nil,
-    monitor_id: pos_integer() | nil,
-    monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          status: String.t() | nil,
+          latency_ms: pos_integer() | nil,
+          response_code: integer() | nil,
+          debug_response_body: String.t() | nil,
+          monitor_id: pos_integer() | nil,
+          monitor: Monitor.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "check_results" do
     field :status, :string
@@ -44,6 +44,7 @@ defmodule UptimeMonitor.Monitors.CheckResult do
     case get_change(changeset, :debug_response_body) do
       nil ->
         changeset
+
       body when is_binary(body) ->
         truncated = String.slice(body, 0, 2048)
         put_change(changeset, :debug_response_body, truncated)

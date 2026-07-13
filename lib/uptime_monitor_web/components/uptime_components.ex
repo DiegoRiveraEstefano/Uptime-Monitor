@@ -118,7 +118,10 @@ defmodule UptimeMonitorWeb.UptimeComponents do
   def custom_input(assigns) do
     ~H"""
     <div class="mb-4">
-      <label :if={@label} class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+      <label
+        :if={@label}
+        class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5"
+      >
         {@label}
       </label>
       <input
@@ -162,7 +165,11 @@ defmodule UptimeMonitorWeb.UptimeComponents do
       <div class="flex items-start justify-between gap-4 mb-4">
         <div>
           <h4 class="font-bold text-lg text-slate-900 font-sans tracking-tight">{@name}</h4>
-          <a href={@url} target="_blank" class="text-xs text-slate-400 hover:text-[hsl(268,60%)] transition-colors flex items-center gap-1 mt-1">
+          <a
+            href={@url}
+            target="_blank"
+            class="text-xs text-slate-400 hover:text-[hsl(268,60%)] transition-colors flex items-center gap-1 mt-1"
+          >
             {@url}
             <.icon name="hero-arrow-top-right-on-square" class="size-3" />
           </a>
@@ -198,12 +205,15 @@ defmodule UptimeMonitorWeb.UptimeComponents do
       <span class="block text-xs uppercase font-semibold text-slate-500 tracking-wider mb-2">{@title}</span>
       <div class="flex items-baseline gap-2">
         <span class="text-3xl font-extrabold text-slate-900 font-sans tracking-tight">{@value}</span>
-        <span :if={@change} class={[
-          "text-xs font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-0.5",
-          @trend == "up" && "bg-emerald-50 text-emerald-700",
-          @trend == "down" && "bg-rose-50 text-rose-700",
-          @trend == "neutral" && "bg-slate-50 text-slate-600"
-        ]}>
+        <span
+          :if={@change}
+          class={[
+            "text-xs font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-0.5",
+            @trend == "up" && "bg-emerald-50 text-emerald-700",
+            @trend == "down" && "bg-rose-50 text-rose-700",
+            @trend == "neutral" && "bg-slate-50 text-slate-600"
+          ]}
+        >
           <.icon :if={@trend == "up"} name="hero-arrow-trending-up" class="size-3" />
           <.icon :if={@trend == "down"} name="hero-arrow-trending-down" class="size-3" />
           {@change}

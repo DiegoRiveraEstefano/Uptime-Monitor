@@ -5,15 +5,15 @@ defmodule UptimeMonitor.Alerts.NotificationChannel do
   alias UptimeMonitor.Accounts.Tenant
 
   @type t :: %__MODULE__{
-    id: pos_integer() | nil,
-    type: String.t() | nil,
-    active: boolean() | nil,
-    config: map() | nil,
-    tenant_id: pos_integer() | nil,
-    tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
-    inserted_at: DateTime.t() | nil,
-    updated_at: DateTime.t() | nil
-  }
+          id: pos_integer() | nil,
+          type: String.t() | nil,
+          active: boolean() | nil,
+          config: map() | nil,
+          tenant_id: pos_integer() | nil,
+          tenant: Tenant.t() | Ecto.Association.NotLoaded.t(),
+          inserted_at: DateTime.t() | nil,
+          updated_at: DateTime.t() | nil
+        }
 
   schema "notification_channels" do
     field :type, :string
@@ -49,8 +49,13 @@ defmodule UptimeMonitor.Alerts.NotificationChannel do
               if String.starts_with?(url, "https://hooks.slack.com/") do
                 changeset
               else
-                add_error(changeset, :config, "must contain a valid Slack webhook URL starting with https://hooks.slack.com/")
+                add_error(
+                  changeset,
+                  :config,
+                  "must contain a valid Slack webhook URL starting with https://hooks.slack.com/"
+                )
               end
+
             _ ->
               add_error(changeset, :config, "must specify key 'webhook_url'")
           end
@@ -63,6 +68,7 @@ defmodule UptimeMonitor.Alerts.NotificationChannel do
               else
                 add_error(changeset, :config, "must contain a valid HTTP or HTTPS endpoint URL")
               end
+
             _ ->
               add_error(changeset, :config, "must specify key 'url'")
           end
@@ -75,6 +81,7 @@ defmodule UptimeMonitor.Alerts.NotificationChannel do
               else
                 add_error(changeset, :config, "must specify a valid target email address")
               end
+
             _ ->
               add_error(changeset, :config, "must specify key 'to'")
           end

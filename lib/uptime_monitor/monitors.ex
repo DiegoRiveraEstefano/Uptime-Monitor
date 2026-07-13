@@ -181,7 +181,7 @@ defmodule UptimeMonitor.Monitors do
 
       heartbeat ->
         heartbeat
-        |> Ecto.Changeset.change(last_pinged_at: DateTime.utc_now())
+        |> Ecto.Changeset.change(last_pinged_at: DateTime.utc_now() |> DateTime.truncate(:second))
         |> Repo.update()
     end
   end
